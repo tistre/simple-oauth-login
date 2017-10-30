@@ -21,10 +21,16 @@ abstract class Service
     public function __construct(Login $oauthLogin)
     {
         $this->oauthLogin = $oauthLogin;
-        $this->config = $this->oauthLogin->getServiceConfig($this::SERVICE);
+        $this->config = $this->oauthLogin->getServiceConfig($this->getService());
     }
     
 
+    public function getService()
+    {
+        return $this::SERVICE;
+    }
+    
+    
     public function getConfig()
     {
         return $this->config;

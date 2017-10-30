@@ -36,7 +36,7 @@ class Login
             throw new \InvalidArgumentException("Invalid service configuration");
         }
         
-        $this->serviceConfigs[$config->getService()] = $serviceConfig;
+        $this->serviceConfigs[$serviceConfig->getService()] = $serviceConfig;
         
         return $this;
     }
@@ -51,6 +51,12 @@ class Login
         return $this->serviceConfigs[$service];
     }
         
+    
+    public function getConfiguredServices()
+    {
+        return array_keys($this->serviceConfigs);
+    }
+    
     
     public function getService($service)
     {

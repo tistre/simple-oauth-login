@@ -6,8 +6,11 @@ namespace Tistre\SimpleOAuthLogin;
 class GithubService extends Service
 {
     const SERVICE = Login::SERVICE_GITHUB;
-        
-    
+
+
+    /**
+     * @return \League\OAuth2\Client\Provider\Github
+     */
     public function getProvider()
     {
         if (! $this->provider) {

@@ -18,11 +18,13 @@ class LoginPage
     /**
      * LoginPage constructor.
      * @param Login $oauthLogin
+     * @param string $service
      * @param string $redirectAfterLogin
      */
-    public function __construct(Login $oauthLogin, $redirectAfterLogin)
+    public function __construct(Login $oauthLogin, $service, $redirectAfterLogin)
     {
         $this->oauthLogin = $oauthLogin;
+        $this->oauthService = $this->oauthLogin->getService($service);
         $this->redirectAfterLogin = $redirectAfterLogin;
     }
 
@@ -32,69 +34,11 @@ class LoginPage
      */
     public function processRequest()
     {
-        $this->chooseService();
-
         if (($_SERVER['REQUEST_METHOD'] === 'GET') && (!isset($_GET['code']))) {
             $this->redirectToService();
         } elseif (($_SERVER['REQUEST_METHOD'] === 'GET') && isset($_GET['code'])) {
             $this->onReturnFromService();
         }
-    }
-
-
-    /**
-     * @return void
-     */
-    protected function chooseService()
-    {
-        $service = false;
-        $configuredServices = $this->oauthLogin->getConfiguredServices();
-
-        if (!empty($_SERVER['PATH_INFO'])) {
-            $service = basename($_SERVER['PATH_INFO']);
-        } elseif (!empty($_COOKIE['oauth_provider'])) {
-            $service = $_COOKIE['oauth_provider'];
-        } elseif (count($configuredServices) === 1) {
-            $service = $configuredServices[0];
-        }
-
-        if ($service) {
-            $this->oauthService = $this->oauthLogin->getService($service);
-
-            setcookie('oauth_provider', $service, (time() + 86400 * 90), '', $_SERVER['HTTP_HOST'], true, true);
-        } else {
-            echo "<ul>\n";
-
-            foreach ($configuredServices as $service) {
-                printf(
-                    '<li><a href="%s">Sign in with %s</a></li>',
-                    htmlspecialchars($this->getUrlWithService($service, $this->redirectAfterLogin)),
-                    htmlspecialchars($service)
-                );
-            }
-
-            echo "</ul>\n";
-
-            session_write_close();
-            exit;
-        }
-    }
-
-
-    /**
-     * @param string $service
-     * @param string $redirectAfterLogin
-     * @return string
-     */
-    protected function getUrlWithService($service, $redirectAfterLogin)
-    {
-        return sprintf
-        (
-            '%s/%s?redirect_after_login=%s',
-            $_SERVER['SCRIPT_NAME'],
-            $service,
-            urlencode($redirectAfterLogin)
-        );
     }
 
 

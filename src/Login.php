@@ -96,4 +96,38 @@ class Login
 
         return $service;
     }
+
+
+    /**
+     * @param string $loginPageUrl
+     * @param string $service
+     * @param string $redirectAfterLogin
+     * @return string
+     */
+    public static function getUrlWithService($loginPageUrl, $service, $redirectAfterLogin)
+    {
+        return sprintf
+        (
+            '%s/%s?redirect_after_login=%s',
+            $loginPageUrl,
+            $service,
+            urlencode($redirectAfterLogin)
+        );
+    }
+
+
+    /**
+     * Ensures a local redirect URL
+     *
+     * @param string $redirectUrl
+     * @return string
+     */
+    public static function sanitizeRedirectUrl($redirectUrl)
+    {
+        $url = parse_url($redirectUrl);
+
+        return $url['path']
+            . (!empty($url['query']) ? '?' . $url['query'] : '')
+            . (!empty($url['anchor']) ? '#' . $url['anchor'] : '');
+    }
 }

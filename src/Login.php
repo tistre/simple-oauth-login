@@ -9,55 +9,77 @@ class Login
     const SERVICE_GOOGLE = 'google';
     const SERVICE_LINKEDIN = 'linkedin';
     const SERVICE_MICROSOFT = 'microsoft';
-            
-    protected $serviceConfigs = [];
-    
 
+    /** @var ServiceConfig[] */
+    protected $serviceConfigs = [];
+
+
+    /**
+     * @param array $configs
+     * @return self
+     */
     public function addServiceConfigsFromArray(array $configs)
     {
         foreach ($configs as $service => $config) {
             $serviceConfig = new ServiceConfig();
-    
+
             $serviceConfig->setService($service);
             $serviceConfig->setProviderParams($config['providerParams']);
-    
-            if (! empty($config['authorizationUrlParams'])) {
+
+            if (!empty($config['authorizationUrlParams'])) {
                 $serviceConfig->setAuthorizationUrlParams($config['authorizationUrlParams']);
             }
-    
+
             $this->addServiceConfig($serviceConfig);
         }
-    }
-    
-    
-    public function addServiceConfig(ServiceConfig $serviceConfig)
-    {
-        if (! $serviceConfig->isValid()) {
-            throw new \InvalidArgumentException("Invalid service configuration");
-        }
-        
-        $this->serviceConfigs[$serviceConfig->getService()] = $serviceConfig;
-        
+
         return $this;
     }
-    
-    
+
+
+    /**
+     * @param ServiceConfig $serviceConfig
+     * @return self
+     */
+    public function addServiceConfig(ServiceConfig $serviceConfig)
+    {
+        if (!$serviceConfig->isValid()) {
+            throw new \InvalidArgumentException("Invalid service configuration");
+        }
+
+        $this->serviceConfigs[$serviceConfig->getService()] = $serviceConfig;
+
+        return $this;
+    }
+
+
+    /**
+     * @param string $service
+     * @return ServiceConfig
+     */
     public function getServiceConfig($service)
     {
-        if (! isset($this->serviceConfigs[$service])) {
+        if (!isset($this->serviceConfigs[$service])) {
             throw new \InvalidArgumentException("Undefined service '$service'");
         }
-        
+
         return $this->serviceConfigs[$service];
     }
-        
-    
+
+
+    /**
+     * @return string[]
+     */
     public function getConfiguredServices()
     {
         return array_keys($this->serviceConfigs);
     }
-    
-    
+
+
+    /**
+     * @param string $service
+     * @return Service
+     */
     public function getService($service)
     {
         if ($service === self::SERVICE_GITHUB) {
@@ -71,7 +93,7 @@ class Login
         } else {
             throw new \InvalidArgumentException("Service '$service' not implemented");
         }
-        
+
         return $service;
     }
 }

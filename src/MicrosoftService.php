@@ -3,11 +3,16 @@
 namespace Tistre\SimpleOAuthLogin;
 
 
+use League\OAuth2\Client\Token\AccessToken;
+
 class MicrosoftService extends Service
 {
     const SERVICE = Login::SERVICE_MICROSOFT;
-        
-    
+
+
+    /**
+     * @return \League\OAuth2\Client\Provider\GenericProvider
+     */
     public function getProvider()
     {
         if (! $this->provider) {
@@ -16,15 +21,20 @@ class MicrosoftService extends Service
         
         return $this->provider;
     }
-    
-    
-    public function getUserDetails($accessToken)
+
+
+    /**
+     * @param AccessToken $accessToken
+     * @return array
+     */
+    public function getUserDetails(AccessToken $accessToken)
     {
         $result = [
             'name' => '',
-            'mail' => ''
+            'mail' => '',
+            'url' => ''
         ];
-        
+
         // The id token is a JWT token that contains information about the user
         // It's a base64 coded string that has a header, payload and signature
         $idToken = $accessToken->getValues()['id_token'];

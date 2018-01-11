@@ -1,0 +1,17 @@
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/tistre/simple-oauth-login"
+        }
+    ],
+    "require": {
+        "league/oauth2-client": "^2.2",
+        "league/oauth2-linkedin": "^2.1",
+        "league/oauth2-google": "^2.0",
+        "league/oauth2-github": "^2.0",
+        "tistre/simple-oauth-login": "dev-master",
+        "twbs/bootstrap": "^3.3",
+        "components/jquery": "^3.2"
+    }
+}

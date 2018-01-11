@@ -59,6 +59,15 @@ abstract class Service
     /**
      * @return string
      */
+    public function getLoginLinkText()
+    {
+        return sprintf('Sign in with %s', $this::SERVICE);
+    }
+
+
+    /**
+     * @return string
+     */
     public function getAuthorizationUrl()
     {
         return $this->getProvider()->getAuthorizationUrl($this->getConfig()->getAuthorizationUrlParams());

@@ -36,4 +36,13 @@ class LinkedInService extends Service
             'url' => $user->getUrl()
         ];
     }
+
+
+    /**
+     * @return string
+     */
+    public function getLoginLinkText()
+    {
+        return 'Sign in with LinkedIn';
+    }
 }

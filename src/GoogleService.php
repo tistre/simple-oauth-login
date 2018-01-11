@@ -19,4 +19,13 @@ class GoogleService extends Service
 
         return $this->provider;
     }
+
+
+    /**
+     * @return string
+     */
+    public function getLoginLinkText()
+    {
+        return 'Sign in with Google';
+    }
 }

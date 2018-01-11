@@ -13,10 +13,19 @@ class GithubService extends Service
      */
     public function getProvider()
     {
-        if (! $this->provider) {
+        if (!$this->provider) {
             $this->provider = new \League\OAuth2\Client\Provider\Github($this->config->getProviderParams());
         }
-        
+
         return $this->provider;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getLoginLinkText()
+    {
+        return 'Sign in with GitHub';
     }
 }

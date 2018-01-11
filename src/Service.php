@@ -107,8 +107,9 @@ abstract class Service
     protected function getUserDetailsFromResourceOwner(ResourceOwnerInterface $user)
     {
         return [
-            'name' => $user->getName(),
-            'mail' => $user->getEmail(),
+            'name' => '',
+            'mail' => '',
+            'image' => '',
             'url' => ''
         ];
     }

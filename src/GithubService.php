@@ -2,6 +2,9 @@
 
 namespace Tistre\SimpleOAuthLogin;
 
+use League\OAuth2\Client\Provider\GithubResourceOwner;
+use League\OAuth2\Client\Provider\ResourceOwnerInterface;
+
 
 class GithubService extends Service
 {
@@ -18,6 +21,24 @@ class GithubService extends Service
         }
 
         return $this->provider;
+    }
+
+
+    /**
+     * @param ResourceOwnerInterface $user
+     * @return array
+     */
+    protected function getUserDetailsFromResourceOwner(ResourceOwnerInterface $user)
+    {
+        $result = parent::getUserDetailsFromResourceOwner($user);
+
+        if ($user instanceof GithubResourceOwner) {
+            $result['name'] = $user->getName();
+            $result['mail'] = $user->getEmail();
+            $result['url'] = $user->getUrl();
+        }
+
+        return $result;
     }
 
 

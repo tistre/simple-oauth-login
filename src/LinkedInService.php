@@ -3,6 +3,7 @@
 namespace Tistre\SimpleOAuthLogin;
 
 
+use League\OAuth2\Client\Provider\LinkedInResourceOwner;
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 
 class LinkedInService extends Service
@@ -29,12 +30,16 @@ class LinkedInService extends Service
      */
     protected function getUserDetailsFromResourceOwner(ResourceOwnerInterface $user)
     {
-        return [
-            // LinkedIn user seems to have no getName() method
-            'name' => $user->getFirstName() . ' ' . $user->getLastName(),
-            'mail' => $user->getEmail(),
-            'url' => $user->getUrl()
-        ];
+        $result = parent::getUserDetailsFromResourceOwner($user);
+
+        if ($user instanceof LinkedInResourceOwner) {
+            $result['name'] = $user->getFirstName() . ' ' . $user->getLastName();
+            $result['mail'] = $user->getEmail();
+            $result['image'] = $user->getImageurl();
+            $result['url'] = $user->getUrl();
+        }
+
+        return $result;
     }
 
 

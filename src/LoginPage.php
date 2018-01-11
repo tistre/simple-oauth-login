@@ -88,6 +88,7 @@ class LoginPage
 
             $_SESSION['oauth_info']['name'] = $userDetails['name'];
             $_SESSION['oauth_info']['mail'] = $userDetails['mail'];
+            $_SESSION['oauth_info']['image'] = $userDetails['image'];
             $_SESSION['oauth_info']['url'] = $userDetails['url'];
 
             if (!empty($_SESSION['oauth_info']['redirect_after_login'])) {

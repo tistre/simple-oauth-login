@@ -14,6 +14,9 @@ class LoginPage
     /** @var string */
     protected $redirectAfterLogin;
 
+    /** @var callable */
+    protected $authenticatedCallback;
+
 
     /**
      * LoginPage constructor.
@@ -29,6 +32,16 @@ class LoginPage
     }
 
 
+    /**
+     * @param callable $callback
+     * @return void
+     */
+    public function setAuthenticatedCallback($callback)
+    {
+        $this->authenticatedCallback = $callback;
+    }
+    
+    
     /**
      * @return void
      */
@@ -100,6 +113,10 @@ class LoginPage
             $_SESSION['oauth_info']['mail'] = $userDetails['mail'];
             $_SESSION['oauth_info']['image'] = $userDetails['image'];
             $_SESSION['oauth_info']['url'] = $userDetails['url'];
+
+            if (is_callable($this->authenticatedCallback)) {
+                call_user_func($this->authenticatedCallback, $accessToken);
+            }
 
             if (!empty($_SESSION['oauth_info']['redirect_after_login'])) {
                 $this->redirectAfterLogin = $_SESSION['oauth_info']['redirect_after_login'];

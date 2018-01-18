@@ -32,6 +32,7 @@ class MicrosoftService extends Service
         $result = [
             'name' => '',
             'mail' => '',
+            'image' => '',
             'url' => ''
         ];
 
@@ -43,7 +44,9 @@ class MicrosoftService extends Service
 
         $jsonAccessTokenPayload = json_decode($decodedAccessTokenPayload, true);
 
-        $result['name'] = $jsonAccessTokenPayload['name'];
+        if (isset($jsonAccessTokenPayload['name'])) {
+            $result['name'] = $jsonAccessTokenPayload['name'];
+        }
 
         // We need a second HTTP call to fetch the e-mail address
 
@@ -60,7 +63,14 @@ class MicrosoftService extends Service
         if ($response->getStatusCode() === 200) {
             $profileJson = $response->getBody()->getContents();
             $profile = json_decode($profileJson, true);
-            $result['mail'] = $profile['mail'];
+            
+            if (isset($profile['mail'])) {
+                $result['mail'] = $profile['mail'];
+            }
+            
+            if (isset($profile['displayName'])) {
+                $result['name'] = $profile['displayName'];
+            }
         }
 
         return $result;

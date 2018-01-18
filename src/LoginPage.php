@@ -34,10 +34,18 @@ class LoginPage
      */
     public function processRequest()
     {
-        if (($_SERVER['REQUEST_METHOD'] === 'GET') && (!isset($_GET['code']))) {
-            $this->redirectToService();
-        } elseif (($_SERVER['REQUEST_METHOD'] === 'GET') && isset($_GET['code'])) {
-            $this->onReturnFromService();
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            if (isset($_GET['code'])) {
+                $this->onReturnFromService();
+            } elseif (isset($_GET['error'])) {
+                error_log(__METHOD__ . ': Service returned error: ' . print_r($_GET, true));
+                echo "Error. See log file for details.\n";
+            } else {
+                $this->redirectToService();
+            }
+        } else {
+            error_log(__METHOD__ . ': Unsupported request method ' . $_SERVER['REQUEST_METHOD']);
+            echo "Error. See log file for details.\n";
         }
     }
 
@@ -70,7 +78,9 @@ class LoginPage
         if (empty($_GET['state']) || ($_GET['state'] !== $_SESSION['oauth_info']['state'])) {
             unset($_SESSION['oauth_info']['state']);
             session_write_close();
-            exit('State value does not match the one initially sent');
+            error_log(__METHOD__ . ': State value does not match the one initially sent');
+            echo "Error. See log file for details.\n";
+            exit();
         }
 
         // With the authorization code, we can retrieve access tokens and other data.
@@ -100,7 +110,8 @@ class LoginPage
             header('Location: ' . $this->redirectAfterLogin);
             exit();
         } catch (League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
-            echo 'Something went wrong, couldn\'t get tokens: ' . $e->getMessage();
+            error_log(__METHOD__ . ': Something went wrong, couldn\'t get tokens: ' . $e->getMessage());
+            echo "Error. See log file for details.\n";
         }
     }
 }

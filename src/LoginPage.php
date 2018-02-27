@@ -72,8 +72,12 @@ class LoginPage
 
         // The OAuth library automatically generates a state value that we can
         // validate later. We just save it for now.
-        $_SESSION['oauth_info']['state'] = $this->oauthService->getProvider()->getState();
-        $_SESSION['oauth_info']['redirect_after_login'] = $this->redirectAfterLogin;
+
+        $oAuthInfo = (new OAuthInfo($_SESSION['oauth_info']))
+            ->setState($this->oauthService->getProvider()->getState())
+            ->setRedirectAfterlogin($this->redirectAfterLogin);
+
+        $_SESSION['oauth_info'] = $oAuthInfo->getArray();
 
         session_write_close();
 
@@ -87,9 +91,12 @@ class LoginPage
      */
     protected function onReturnFromService()
     {
+        $oAuthInfo = new OAuthInfo($_SESSION['oauth_info']);
+
         // Validate the OAuth state parameter
-        if (empty($_GET['state']) || ($_GET['state'] !== $_SESSION['oauth_info']['state'])) {
-            unset($_SESSION['oauth_info']['state']);
+        if (empty($_GET['state']) || ($_GET['state'] !== $oAuthInfo->getState())) {
+            $oAuthInfo->setState('');
+            $_SESSION['oauth_info'] = $oAuthInfo->getArray();
             session_write_close();
             error_log(__METHOD__ . ': State value does not match the one initially sent');
             echo "Error. See log file for details.\n";
@@ -101,27 +108,27 @@ class LoginPage
             // Get an access token using the authorization code grant
             $accessToken = $this->oauthService->getAuthorizationCodeAccessToken($_GET['code']);
 
-            $_SESSION['oauth_info']['authenticated'] = true;
-            $_SESSION['oauth_info']['provider'] = $this->oauthService->getService();
-            $_SESSION['oauth_info']['access_token'] = $accessToken->getToken();
-
             // We got an access token, let's now get the user's details
-
             $userDetails = $this->oauthService->getUserDetails($accessToken);
 
-            $_SESSION['oauth_info']['name'] = $userDetails['name'];
-            $_SESSION['oauth_info']['mail'] = $userDetails['mail'];
-            $_SESSION['oauth_info']['image'] = $userDetails['image'];
-            $_SESSION['oauth_info']['url'] = $userDetails['url'];
+            $oAuthInfo
+                ->setAuthenticated(true)
+                ->setProvider($this->oauthService->getService())
+                ->setAccessToken($accessToken->getToken())
+                ->setName($userDetails['name'])
+                ->setMail($userDetails['mail'])
+                ->setImage($userDetails['image'])
+                ->setUrl($userDetails['url']);
 
             if (is_callable($this->authenticatedCallback)) {
                 call_user_func($this->authenticatedCallback, $accessToken);
             }
 
-            if (!empty($_SESSION['oauth_info']['redirect_after_login'])) {
-                $this->redirectAfterLogin = $_SESSION['oauth_info']['redirect_after_login'];
+            if (strlen($oAuthInfo->getRedirectAfterlogin()) > 0) {
+                $this->redirectAfterLogin = $oAuthInfo->getRedirectAfterlogin();
             }
 
+            $_SESSION['oauth_info'] = $oAuthInfo->getArray();
             session_write_close();
 
             header('Location: ' . $this->redirectAfterLogin);

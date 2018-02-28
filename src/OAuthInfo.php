@@ -32,7 +32,7 @@ class OAuthInfo
     /** @var string */
     protected $redirect_after_login = '';
 
-    const ARRAY_STRING_KEYS = [
+    protected $ARRAY_STRING_KEYS = [
         'state',
         'provider',
         'access_token',
@@ -54,7 +54,7 @@ class OAuthInfo
      * @param mixed $info
      * @return self
      */
-    public function setArray($info): OAuthInfo
+    public function setArray($info)
     {
         if (!is_array($info)) {
             $info = [];
@@ -66,7 +66,7 @@ class OAuthInfo
 
         $this->setAuthenticated(boolval($info['authenticated']));
 
-        foreach (self::ARRAY_STRING_KEYS as $key) {
+        foreach ($this->ARRAY_STRING_KEYS as $key) {
             if (isset($info[$key])) {
                 $this->$key = $info[$key];
             }
@@ -79,11 +79,11 @@ class OAuthInfo
     /**
      * @return array
      */
-    public function getArray(): array
+    public function getArray()
     {
         $result = ['authenticated' => $this->authenticated];
 
-        foreach (self::ARRAY_STRING_KEYS as $key) {
+        foreach ($this->ARRAY_STRING_KEYS as $key) {
             $value = $this->$key;
 
             if (strlen($value) > 0) {
@@ -98,7 +98,7 @@ class OAuthInfo
     /**
      * @return string
      */
-    public function getState(): string
+    public function getState()
     {
         return $this->state;
     }
@@ -108,7 +108,7 @@ class OAuthInfo
      * @param string $state
      * @return self
      */
-    public function setState(string $state): OAuthInfo
+    public function setState(string $state)
     {
         $this->state = $state;
         return $this;
@@ -118,7 +118,7 @@ class OAuthInfo
     /**
      * @return bool
      */
-    public function isAuthenticated(): bool
+    public function isAuthenticated()
     {
         return $this->authenticated;
     }
@@ -128,7 +128,7 @@ class OAuthInfo
      * @param bool $authenticated
      * @return self
      */
-    public function setAuthenticated(bool $authenticated): OAuthInfo
+    public function setAuthenticated(bool $authenticated)
     {
         $this->authenticated = $authenticated;
         return $this;
@@ -138,7 +138,7 @@ class OAuthInfo
     /**
      * @return string
      */
-    public function getProvider(): string
+    public function getProvider()
     {
         return $this->provider;
     }
@@ -148,7 +148,7 @@ class OAuthInfo
      * @param string $provider
      * @return self
      */
-    public function setProvider(string $provider): OAuthInfo
+    public function setProvider(string $provider)
     {
         $this->provider = $provider;
         return $this;
@@ -158,7 +158,7 @@ class OAuthInfo
     /**
      * @return string
      */
-    public function getAccessToken(): string
+    public function getAccessToken()
     {
         return $this->access_token;
     }
@@ -168,7 +168,7 @@ class OAuthInfo
      * @param string $accessToken
      * @return self
      */
-    public function setAccessToken(string $access_token): OAuthInfo
+    public function setAccessToken(string $access_token)
     {
         $this->access_token = $access_token;
         return $this;
@@ -178,7 +178,7 @@ class OAuthInfo
     /**
      * @return string
      */
-    public function getName(): string
+    public function getName()
     {
         return $this->name;
     }
@@ -188,7 +188,7 @@ class OAuthInfo
      * @param string $name
      * @return self
      */
-    public function setName(string $name): OAuthInfo
+    public function setName(string $name)
     {
         $this->name = $name;
         return $this;
@@ -198,7 +198,7 @@ class OAuthInfo
     /**
      * @return string
      */
-    public function getMail(): string
+    public function getMail()
     {
         return $this->mail;
     }
@@ -208,7 +208,7 @@ class OAuthInfo
      * @param string $mail
      * @return self
      */
-    public function setMail(string $mail): OAuthInfo
+    public function setMail(string $mail)
     {
         $this->mail = $mail;
         return $this;
@@ -218,7 +218,7 @@ class OAuthInfo
     /**
      * @return string
      */
-    public function getImage(): string
+    public function getImage()
     {
         return $this->image;
     }
@@ -228,7 +228,7 @@ class OAuthInfo
      * @param string $image
      * @return self
      */
-    public function setImage(string $image): OAuthInfo
+    public function setImage(string $image)
     {
         $this->image = $image;
         return $this;
@@ -238,7 +238,7 @@ class OAuthInfo
     /**
      * @return string
      */
-    public function getUrl(): string
+    public function getUrl()
     {
         return $this->url;
     }
@@ -248,7 +248,7 @@ class OAuthInfo
      * @param string $url
      * @return self
      */
-    public function setUrl(string $url): OAuthInfo
+    public function setUrl(string $url)
     {
         $this->url = $url;
         return $this;
@@ -258,7 +258,7 @@ class OAuthInfo
     /**
      * @return string
      */
-    public function getRedirectAfterlogin(): string
+    public function getRedirectAfterlogin()
     {
         return $this->redirect_after_login;
     }
@@ -268,7 +268,7 @@ class OAuthInfo
      * @param string $redirectAfterLogin
      * @return self
      */
-    public function setRedirectAfterlogin(string $redirect_after_login): OAuthInfo
+    public function setRedirectAfterlogin(string $redirect_after_login)
     {
         $this->redirect_after_login = $redirect_after_login;
         return $this;

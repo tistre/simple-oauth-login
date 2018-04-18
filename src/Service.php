@@ -113,4 +113,14 @@ abstract class Service
             'url' => ''
         ];
     }
+
+
+    /**
+     * @param AccessToken $accessToken
+     * @return array
+     */
+    public function getUserGroups(AccessToken $accessToken)
+    {
+        return [];
+    }
 }

@@ -78,6 +78,40 @@ class MicrosoftService extends Service
 
 
     /**
+     * @param AccessToken $accessToken
+     * @return array
+     */
+    public function getUserGroups(AccessToken $accessToken)
+    {
+        $groups = [];
+    
+        $client = new \GuzzleHttp\Client();
+
+        $response = $client->request('GET', 'https://graph.microsoft.com/v1.0/me/memberOf', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $accessToken->getToken()
+            ]
+        ]);
+
+        if ($response->getStatusCode() === 200) {
+            $profileJson = $response->getBody()->getContents();
+            $profile = json_decode($profileJson, true);
+
+            if (is_array($profile['value'])) {
+                foreach ($profile['value'] as $directoryObject) {
+                    $groups[] = [
+                        'name' => $directoryObject['mailNickname'],
+                        'displayName' => $directoryObject['displayName']
+                    ];
+                }
+            }
+        }
+        
+        return $groups;
+    }
+
+
+    /**
      * @return string
      */
     public function getLoginLinkText()

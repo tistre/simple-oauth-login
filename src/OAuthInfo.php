@@ -29,6 +29,9 @@ class OAuthInfo
     /** @var string */
     protected $url = '';
 
+    /** @var array */
+    protected $groups = [];
+    
     /** @var string */
     protected $redirect_after_login = '';
 
@@ -40,6 +43,7 @@ class OAuthInfo
         'mail',
         'image',
         'url',
+        'groups',
         'redirect_after_login'
     ];
 
@@ -86,7 +90,7 @@ class OAuthInfo
         foreach ($this->ARRAY_STRING_KEYS as $key) {
             $value = $this->$key;
 
-            if (strlen($value) > 0) {
+            if ((is_array($value) && !empty($value)) || (is_string($value) && (strlen($value) > 0))) {
                 $result[$key] = $value;
             }
         }
@@ -251,6 +255,26 @@ class OAuthInfo
     public function setUrl(string $url)
     {
         $this->url = $url;
+        return $this;
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getGroups()
+    {
+        return $this->groups;
+    }
+
+
+    /**
+     * @param array $groups
+     * @return self
+     */
+    public function setGroups(array $groups)
+    {
+        $this->groups = $groups;
         return $this;
     }
 
